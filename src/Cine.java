@@ -1,23 +1,23 @@
 import java.util.Scanner;
 
 /**
- * La clase Cine representa un cine con información sobre su nombre, aforo, salas, butacas libres y total de ingresos.
+ * La clase Cine representa un cine con salas, películas y operaciones relacionadas.
  */
 public class Cine {
-
     private String nombre; // Nombre del cine
     private int aforo; // Aforo total del cine
     private Sala[] salas; // Arreglo de salas en el cine
-    private int butacasLibres; // Cantidad de butacas libres en todas las salas
-    private double totalIngresos; // Total de ingresos del cine
+    private int butacasLibres; // Número total de butacas libres en todas las salas
+    private double totalIngresos; // Ingresos totales acumulados por ventas de boletas
 
     /**
      * Constructor de la clase Cine.
-     * @param nombre Nombre del cine.
-     * @param aforo Aforo total del cine.
-     * @param salas Arreglo de salas en el cine.
-     * @param butacasLibres Cantidad de butacas libres inicial.
-     * @param totalIngresos Total de ingresos inicial.
+     *
+     * @param nombre        Nombre del cine.
+     * @param aforo         Aforo total del cine.
+     * @param salas         Arreglo de salas en el cine.
+     * @param butacasLibres Número total de butacas libres en todas las salas.
+     * @param totalIngresos Ingresos totales acumulados por ventas de boletas.
      */
     public Cine(String nombre, int aforo, Sala[] salas, int butacasLibres, double totalIngresos) {
         this.nombre = nombre;
@@ -28,11 +28,11 @@ public class Cine {
     }
 
     /**
-     * Visualiza la información del cine, incluyendo las películas en proyección en cada sala.
+     * Visualiza la información del cine, incluyendo detalles de cada sala y película.
      */
     public void visualizarInformacion() {
         System.out.println("Nombre del cine: " + nombre);
-        System.out.println("Aforo total: " + aforo);
+        System.out.println("Aforo total " + aforo);
         System.out.println("Butacas disponibles: " + butacasLibres);
 
         for (Sala sala : salas) {
@@ -45,7 +45,7 @@ public class Cine {
     }
 
     /**
-     * Permite al usuario realizar la compra de boletas para una película en una sala específica.
+     * Realiza la compra de boletas, permitiendo al usuario elegir asientos en una sala específica.
      */
     public void realizarCompra() {
         Scanner scanner = new Scanner(System.in);
@@ -63,10 +63,37 @@ public class Cine {
                 visualizarInformacion();
                 break;
             case 2:
-                realizarReserva();
+                System.out.println("Ingrese el número de la sala:");
+                int salaId = scanner.nextInt();
+
+                Sala salaSeleccionada = getSalaById(salaId);
+
+                if (salaSeleccionada == null) {
+                    System.out.println("Sala no encontrada. Reserva cancelada.");
+                    return;
+                }
+
+                salaSeleccionada.mostrarAsientos();
+
+                System.out.println("Ingrese la fila de la butaca:");
+                int fila = scanner.nextInt();
+
+                System.out.println("Ingrese la columna de la butaca:");
+                int columna = scanner.nextInt();
+
+                System.out.println("Ingrese su correo electrónico:");
+                String emailComprador = scanner.next();
+
+                // Verificar disponibilidad y realizar reserva
+                if (salaSeleccionada.reservarButaca(fila, columna, emailComprador)) {
+                    System.out.println("Reserva exitosa para: " + emailComprador + ". ¡Disfrute de la película!");
+                } else {
+                    System.out.println("La butaca no está disponible para reserva. Inténtelo de nuevo.");
+                }
                 break;
             case 3:
                 consultarDisponibilidad();
+                // Lógica para ver la matriz con asientos libres/ocupados de una sala concreta
                 break;
             case 4:
                 System.out.println("Compra cancelada. ¡Hasta luego!");
@@ -78,46 +105,12 @@ public class Cine {
     }
 
     /**
-     * Permite al usuario reservar una butaca para una película en una sala específica.
-     */
-    private void realizarReserva() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Ingrese el número de la sala:");
-        int salaId = scanner.nextInt();
-
-        Sala salaSeleccionada = getSalaById(salaId);
-
-        if (salaSeleccionada == null) {
-            System.out.println("Sala no encontrada. Reserva cancelada.");
-            return;
-        }
-
-        salaSeleccionada.mostrarAsientos();
-
-        System.out.println("Ingrese la fila de la butaca:");
-        int fila = scanner.nextInt();
-
-        System.out.println("Ingrese la columna de la butaca:");
-        int columna = scanner.nextInt();
-
-        System.out.println("Ingrese su correo electrónico:");
-        String emailComprador = scanner.next();
-
-        // Verificar disponibilidad y realizar reserva
-        if (salaSeleccionada.reservarButaca(fila, columna, emailComprador)) {
-            System.out.println("Reserva exitosa para : " + emailComprador + "¡Disfrute de la película!");
-            actualizarIngresos(salaSeleccionada.getPelicula().getPrecioEntrada());
-        } else {
-            System.out.println("La butaca no está disponible para reserva. Inténtelo de nuevo.");
-        }
-    }
-
-    /**
      * Consulta la disponibilidad de asientos en una sala específica.
      */
-    private void consultarDisponibilidad() {
+    public void consultarDisponibilidad() {
         Scanner scanner = new Scanner(System.in);
         visualizarInformacion();
+        // seleccionar sala
         System.out.println("Ingrese el numero de la sala");
         int salaId = scanner.nextInt();
 
@@ -128,13 +121,15 @@ public class Cine {
             return;
         }
 
+        // Mostrar matriz de asientos solo si la sala no es nula
         salaSeleccionada.mostrarAsientos();
     }
 
     /**
-     * Obtiene una sala específica por su ID.
-     * @param id Identificador único de la sala.
-     * @return La sala con el ID especificado, o null si no se encuentra.
+     * Obtiene una sala por su ID.
+     *
+     * @param id ID de la sala a buscar.
+     * @return Sala con el ID proporcionado, o null si no se encuentra.
      */
     private Sala getSalaById(int id) {
         for (Sala sala : salas) {
@@ -146,27 +141,47 @@ public class Cine {
     }
 
     /**
-     * Actualiza la cantidad de butacas libres y registra los ingresos por una venta.
-     * @param precio Precio de la entrada vendida.
-     */
-    private void actualizarIngresos(double precio) {
-        butacasLibres--;
-        totalIngresos += precio;
-    }
-
-    /**
      * Obtiene la cantidad de butacas libres en todas las salas.
-     * @return La cantidad de butacas libres.
+     *
+     * @return Número total de butacas libres.
      */
     public int getButacasLibres() {
         return butacasLibres;
     }
 
     /**
-     * Obtiene el total de ingresos del cine.
-     * @return El total de ingresos.
+     * Reserva una cantidad específica de butacas, actualizando el contador de butacas libres.
+     *
+     * @param cantidad Cantidad de butacas a reservar.
+     */
+    private void reservarButaca(int cantidad) {
+        butacasLibres -= cantidad;
+    }
+
+    /**
+     * Desocupa una cantidad específica de butacas, actualizando el contador de butacas libres.
+     *
+     * @param cantidad Cantidad de butacas a desocupar.
+     */
+    private void desocuparButaca(int cantidad) {
+        butacasLibres += cantidad;
+    }
+
+    /**
+     * Obtiene el total de ingresos acumulados por ventas de boletas.
+     *
+     * @return Total de ingresos acumulados.
      */
     public double getTotalIngresos() {
         return totalIngresos;
+    }
+
+    /**
+     * Vende una boleta, actualizando el total de ingresos acumulados.
+     *
+     * @param precio Precio de la boleta vendida.
+     */
+    private void venderBoleta(double precio) {
+        totalIngresos += precio;
     }
 }
