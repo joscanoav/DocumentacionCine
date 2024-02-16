@@ -1,12 +1,22 @@
+/**
+ * La clase Pelicula representa una película en un cine,
+ * con información sobre su título, duración, precio de entrada y horario de proyección.
+ */
 public class Pelicula {
 
-    private String titulo;
-    private int duracion;
-    private double precioEntrada;
-    private String horario;
+    private String titulo; // Título de la película
+    private int duracion; // Duración de la película en minutos
+    private double precioEntrada; // Precio de entrada para ver la película
+    private String horario; // Horario de proyección de la película
 
-
-
+    /**
+     * Constructor de la clase Pelicula.
+     * Se utiliza para crear una nueva instancia de Pelicula con la información proporcionada.
+     * @param titulo El título de la película.
+     * @param duracion La duración de la película en minutos.
+     * @param precioEntrada El precio de entrada para ver la película.
+     * @param horario El horario de proyección de la película.
+     */
     public Pelicula(String titulo, int duracion, double precioEntrada, String horario) {
         this.titulo = titulo;
         this.duracion = duracion;
@@ -14,33 +24,35 @@ public class Pelicula {
         this.horario = horario;
     }
 
-    //Se utiliza get para acceder a valores privados de una clase
-    // Es un medio controlado y seguro para acceder a atributos desde fuera de clase
-    // practica comun es usar encapsulamiento
-    // Flexibilidad: Si más adelante necesitas realizar alguna lógica adicional (como validaciones, cálculos, etc.) al acceder o modificar un atributo, puedes hacerlo en los métodos getters y setters sin afectar a las partes del código que ya lo utilizan.
-    // No se usa setter porque no seria necesario
-    // En caso lo usariamos si tuvieramos cambiar valoresa los atributos
-    // , los setters son métodos que se utilizan para modificar o actualizar los valores de los atributos de un objeto
-    /*
-     *  public void setTitulo(String nuevoTitulo) {
-        this.titulo = nuevoTitulo;
-        }
-     *
-     *  */
+    /**
+     * Obtiene el título de la película.
+     * @return El título de la película.
+     */
     public String getTitulo() {
         return titulo;
     }
 
+    /**
+     * Obtiene la duración de la película en minutos.
+     * @return La duración de la película en minutos.
+     */
     public int getDuracion() {
         return duracion;
     }
 
+    /**
+     * Obtiene el precio de entrada para ver la película.
+     * @return El precio de entrada para ver la película.
+     */
     public double getPrecioEntrada() {
         return precioEntrada;
     }
 
+    /**
+     * Obtiene el horario de proyección de la película.
+     * @return El horario de proyección de la película.
+     */
     public String getHorario() {
         return horario;
     }
-
 }
