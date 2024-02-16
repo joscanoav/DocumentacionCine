@@ -5,8 +5,7 @@ out/
 .idea
 DocumentacionCine.iml
 node_modules/
-package.json
-package-lock.json
+
 
 ### Eclipse ###
 .apt_generated
