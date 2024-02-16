@@ -1,41 +1,38 @@
 import java.util.Scanner;
+
+/**
+ * La clase Cine representa un cine con información sobre su nombre, aforo, salas, butacas libres y total de ingresos.
+ */
 public class Cine {
-    //Se crean los atributos para la clase nombre aforo y sala
-    private String nombre;
-    private int aforo;
-    private Sala[] salas;
-    private int butacasLibres;
-    private double totalIngresos;
 
-    // Se generan los constructores con los valores para inicializar los valores
-    // nombre del cine, el aforo total y un arreglo de salas como parámetros
+    private String nombre; // Nombre del cine
+    private int aforo; // Aforo total del cine
+    private Sala[] salas; // Arreglo de salas en el cine
+    private int butacasLibres; // Cantidad de butacas libres en todas las salas
+    private double totalIngresos; // Total de ingresos del cine
 
+    /**
+     * Constructor de la clase Cine.
+     * @param nombre Nombre del cine.
+     * @param aforo Aforo total del cine.
+     * @param salas Arreglo de salas en el cine.
+     * @param butacasLibres Cantidad de butacas libres inicial.
+     * @param totalIngresos Total de ingresos inicial.
+     */
     public Cine(String nombre, int aforo, Sala[] salas, int butacasLibres, double totalIngresos) {
-        super();
         this.nombre = nombre;
         this.aforo = aforo;
         this.salas = salas;
-        this.butacasLibres = aforo;
-        this.totalIngresos = 0.0;
+        this.butacasLibres = butacasLibres;
+        this.totalIngresos = totalIngresos;
     }
 
-
-
-    // Se registra el primer metodo void ya que no devuelve ningun
-    //valor, solo es imprimir informacion
-    // En este caso no es static lo que implica que
-    // debe ser llamado a traves de la instancia cine
-    //Si fuera estatico se llamaria directamente
-    //Cine miCine = new Cine("Cine Ejemplo", 100, salas);
-    //miCine.visualizarInformacion();
-    // Llamada directa a un método estático
-    //Cine.visualizarInformacion();
-    //Como visializarInformacion necesita acceder atributos
-    //Necesita que no sea estatico
-
+    /**
+     * Visualiza la información del cine, incluyendo las películas en proyección en cada sala.
+     */
     public void visualizarInformacion() {
         System.out.println("Nombre del cine: " + nombre);
-        System.out.println("Aforo total " + aforo);
+        System.out.println("Aforo total: " + aforo);
         System.out.println("Butacas disponibles: " + butacasLibres);
 
         for (Sala sala : salas) {
@@ -45,14 +42,11 @@ public class Cine {
             System.out.println("Precio de entrada: $" + sala.getPelicula().getPrecioEntrada());
             System.out.println("Horario: " + sala.getPelicula().getHorario());
         }
-
     }
 
-
-
-    //Este metodo permite al usuario la disponibilidad
-    //de asientos en una sala
-
+    /**
+     * Permite al usuario realizar la compra de boletas para una película en una sala específica.
+     */
     public void realizarCompra() {
         Scanner scanner = new Scanner(System.in);
         visualizarInformacion();
@@ -69,38 +63,10 @@ public class Cine {
                 visualizarInformacion();
                 break;
             case 2:
-                System.out.println("Ingrese el número de la sala:");
-                int salaId = scanner.nextInt();
-
-                Sala salaSeleccionada = getSalaById(salaId);
-
-                if (salaSeleccionada == null) {
-                    System.out.println("Sala no encontrada. Reserva cancelada.");
-                    return;
-                }
-
-                salaSeleccionada.mostrarAsientos();
-
-                System.out.println("Ingrese la fila de la butaca:");
-                int fila = scanner.nextInt();
-
-                System.out.println("Ingrese la columna de la butaca:");
-                int columna = scanner.nextInt();
-
-                System.out.println("Ingrese su correo electrónico:");
-                String emailComprador = scanner.next();
-
-
-                // Verificar disponibilidad y realizar reserva
-                if (salaSeleccionada.reservarButaca(fila, columna, emailComprador)) {
-                    System.out.println("Reserva exitosa para : " + emailComprador + "¡Disfrute de la película!");
-                } else {
-                    System.out.println("La butaca no está disponible para reserva. Inténtelo de nuevo.");
-                }
+                realizarReserva();
                 break;
             case 3:
                 consultarDisponibilidad();
-                // Lógica para ver la matriz con asientos libres/ocupados de una sala concreta
                 break;
             case 4:
                 System.out.println("Compra cancelada. ¡Hasta luego!");
@@ -111,54 +77,96 @@ public class Cine {
         }
     }
 
-    //Metodo para que un usuario consulte la disponibilidad de asiento
+    /**
+     * Permite al usuario reservar una butaca para una película en una sala específica.
+     */
+    private void realizarReserva() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Ingrese el número de la sala:");
+        int salaId = scanner.nextInt();
 
-    public void consultarDisponibilidad() {
+        Sala salaSeleccionada = getSalaById(salaId);
+
+        if (salaSeleccionada == null) {
+            System.out.println("Sala no encontrada. Reserva cancelada.");
+            return;
+        }
+
+        salaSeleccionada.mostrarAsientos();
+
+        System.out.println("Ingrese la fila de la butaca:");
+        int fila = scanner.nextInt();
+
+        System.out.println("Ingrese la columna de la butaca:");
+        int columna = scanner.nextInt();
+
+        System.out.println("Ingrese su correo electrónico:");
+        String emailComprador = scanner.next();
+
+        // Verificar disponibilidad y realizar reserva
+        if (salaSeleccionada.reservarButaca(fila, columna, emailComprador)) {
+            System.out.println("Reserva exitosa para : " + emailComprador + "¡Disfrute de la película!");
+            actualizarIngresos(salaSeleccionada.getPelicula().getPrecioEntrada());
+        } else {
+            System.out.println("La butaca no está disponible para reserva. Inténtelo de nuevo.");
+        }
+    }
+
+    /**
+     * Consulta la disponibilidad de asientos en una sala específica.
+     */
+    private void consultarDisponibilidad() {
         Scanner scanner = new Scanner(System.in);
         visualizarInformacion();
-        //seleccionar sala
         System.out.println("Ingrese el numero de la sala");
         int salaId = scanner.nextInt();
 
         Sala salaSeleccionada = getSalaById(salaId);
 
-        if(salaSeleccionada == null) {
+        if (salaSeleccionada == null) {
             System.out.println("Sala no encontrada. Consulta cancelada");
             return;
         }
 
-        // Mostrar matriz de asientos
         salaSeleccionada.mostrarAsientos();
     }
 
-    //Metodo para obtener una sala por su ID
-
+    /**
+     * Obtiene una sala específica por su ID.
+     * @param id Identificador único de la sala.
+     * @return La sala con el ID especificado, o null si no se encuentra.
+     */
     private Sala getSalaById(int id) {
         for (Sala sala : salas) {
-            if(sala.getId()==id) {
+            if (sala.getId() == id) {
                 return sala;
             }
         }
         return null;
     }
 
+    /**
+     * Actualiza la cantidad de butacas libres y registra los ingresos por una venta.
+     * @param precio Precio de la entrada vendida.
+     */
+    private void actualizarIngresos(double precio) {
+        butacasLibres--;
+        totalIngresos += precio;
+    }
+
+    /**
+     * Obtiene la cantidad de butacas libres en todas las salas.
+     * @return La cantidad de butacas libres.
+     */
     public int getButacasLibres() {
         return butacasLibres;
     }
 
-    private void reservarButaca(int cantidad) {
-        butacasLibres -= cantidad;
-    }
-
-    private void desocuparButaca(int cantidad) {
-        butacasLibres += cantidad;
-    }
-
+    /**
+     * Obtiene el total de ingresos del cine.
+     * @return El total de ingresos.
+     */
     public double getTotalIngresos() {
         return totalIngresos;
-    }
-
-    private void venderBoleta(double precio) {
-        totalIngresos += precio;
     }
 }
