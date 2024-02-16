@@ -1,65 +1,96 @@
+/**
+ * La clase Sala representa una sala de cine con información sobre su identificador, película actual y disposición de butacas.
+ */
 public class Sala {
-    // Se crea un identificador a la sala
+    // Identificador único de la sala
     private int id;
-    //Se declara una variable llamada pelicula de tipo Pelicula
+    // Película actualmente en proyección en la sala
     private Pelicula pelicula;
-    // Se declara una matriz de tipo Butaca que representa la disposicion de cada butaca
+    // Matriz que representa la disposición de las butacas en la sala
     private Butaca[][] butacas;
 
-    // Se declara un constructor para inicializar Sala con datos
-    // No se crea un constructor vacio ya que se necesita informacion especifica
-    //para crear una sala
+    /**
+     * Constructor de la clase Sala.
+     * @param id Identificador único de la sala.
+     * @param pelicula Película actualmente en proyección en la sala.
+     * @param butacas Matriz que representa la disposición de las butacas en la sala.
+     */
     public Sala(int id, Pelicula pelicula, Butaca[][] butacas) {
         this.id = id;
         this.pelicula = pelicula;
         this.butacas = butacas;
     }
 
-    // Se genera los getter para obtener informacion de los atributos
+    // Getters para obtener información de los atributos
+
+    /**
+     * Obtiene el identificador único de la sala.
+     * @return El identificador único de la sala.
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Obtiene la película actualmente en proyección en la sala.
+     * @return La película actualmente en proyección en la sala.
+     */
     public Pelicula getPelicula() {
         return pelicula;
     }
 
+    /**
+     * Obtiene la matriz que representa la disposición de las butacas en la sala.
+     * @return La matriz de butacas en la sala.
+     */
     public Butaca[][] getButacas() {
         return butacas;
     }
 
-    // Se crean los metodos para tareas especificas:
+    // Métodos para tareas específicas:
 
-    // Metodo sirver para ubicar a la butaca por coordenadas
-    // Este metodo esta dentro de los limites matriz butaca
+    /**
+     * Obtiene la butaca ubicada en una posición específica de la sala.
+     * @param fila Número de fila de la butaca.
+     * @param columna Número de columna de la butaca.
+     * @return La butaca ubicada en la posición especificada.
+     */
     public Butaca getButaca(int fila, int columna) {
-        // se pone - 1 porque los indices empiezan desde 0
-        return butacas[fila - 1][columna -1];
-
+        return butacas[fila - 1][columna - 1]; // Se resta 1 porque los índices empiezan desde 0
     }
 
-    // Metodo para verificar si una Butaca especifica esta libre
+    /**
+     * Verifica si una butaca específica está disponible.
+     * @param fila Número de fila de la butaca.
+     * @param columna Número de columna de la butaca.
+     * @return true si la butaca está disponible, false si está ocupada o no existe.
+     */
     public boolean isButacaLibre(int fila, int columna) {
-        // Utiliza el metodo getButaca para obetener referencia de la butaca exacta
-        Butaca butaca = getButaca(fila,columna);
-        //verifica si la butaca no es nulla y si no esta ocupada
-        // return butaca != null -- verifica si la variable butaca es nulo
-        // es && (AND) Porque si no cumple no continua con la siguiente expresion
-        //!butaca.isOcupada() estoy verifica si la butaca no es ta ocupada
+        Butaca butaca = getButaca(fila, columna);
         return butaca != null && !butaca.isOcupada();
     }
 
-    // Metodo para reservar una Butaca
+    /**
+     * Reserva una butaca específica para un comprador.
+     * @param fila Número de fila de la butaca.
+     * @param columna Número de columna de la butaca.
+     * @param emailComprador Correo electrónico del comprador.
+     * @return true si la reserva es exitosa, false si la butaca está ocupada o no existe.
+     */
     public boolean reservarButaca(int fila, int columna, String emailComprador) {
         Butaca butaca = getButaca(fila, columna);
         if (butaca != null && !butaca.isOcupada()) {
             butaca.ocupar(emailComprador);
-            return true; //Reserva exitosa
+            return true; // Reserva exitosa
         }
-
-        return false; // La butaca no esta disponible para reserva
+        return false; // La butaca no está disponible para reserva
     }
 
+    /**
+     * Desocupa una butaca específica.
+     * @param fila Número de fila de la butaca.
+     * @param columna Número de columna de la butaca.
+     */
     public void desocuparButaca(int fila, int columna) {
         Butaca butaca = getButaca(fila, columna);
         if (butaca != null && butaca.isOcupada()) {
@@ -67,20 +98,21 @@ public class Sala {
         }
     }
 
-    // Metodo para mostrar la matriz de asientos
+    /**
+     * Muestra el estado actual de los asientos en la sala.
+     */
     public void mostrarAsientos() {
-        System.out.println("Estado de los asientos: ");
+        System.out.println("Estado de los asientos en la Sala " + id + ": ");
 
-        for(int i=0; i < butacas.length;i++) {
-            for(int j = 0; j < butacas[0].length;j++) {
-                if(butacas[i][j].isOcupada()) {
-                    System.out.print("[x]");// Asiento Ocupado
-                }else {
-                    System.out.print("[ ]");//Asiento disponible
+        for (int i = 0; i < butacas.length; i++) {
+            for (int j = 0; j < butacas[0].length; j++) {
+                if (butacas[i][j].isOcupada()) {
+                    System.out.print("[x]"); // Asiento Ocupado
+                } else {
+                    System.out.print("[ ]"); // Asiento disponible
                 }
             }
             System.out.println();
         }
     }
-
 }
